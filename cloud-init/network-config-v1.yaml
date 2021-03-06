@@ -1,9 +1,0 @@
-version: 1
-config:
- - type: physical
-   name: eth0
-   subnets:
-     - type: static
-       address: 192.168.2.122
-       netmask: 255.255.255.0
-       gateway: 192.168.2.1

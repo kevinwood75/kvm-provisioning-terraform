@@ -1,4 +1,4 @@
-# libvirt.tf
+# main.tf
 
 terraform {
   required_providers {
@@ -26,7 +26,8 @@ resource "libvirt_pool" "centos" {
 resource "libvirt_volume" "image-qcow2" {
  name = "CentOS-7-x86_64-GenericCloud"
  pool = libvirt_pool.centos.name
- source ="${path.module}/downloads/CentOS-7-x86_64-GenericCloud.qcow2"
+# source ="${path.module}/downloads/CentOS-7-x86_64-GenericCloud.qcow2"
+ source ="/vm/downloads/CentOS-7-x86_64-GenericCloud.qcow2"
  format = "qcow2"
 }
 
@@ -47,25 +48,40 @@ data "template_file" "user_data" {
 # read the configuration
 data "template_file" "meta_data" {
  template = file("${path.module}/meta-data.yaml")
+  
+ vars = {
+   vmname      = var.hostname
+   hostname    = var.hostname
+ }
+
 }
 
 # read the configuration
 data "template_file" "network_config" {
  template = file("${path.module}/network-config-v1.yaml")
+  
+ vars = {
+   ipaddy     = var.ipaddy
+   subnet     = var.subnet
+   gateway    = var.gateway   
+   interface  = var.interface
+ }
+
+
 }
 
 # Define KVM domain to create
-resource "libvirt_domain" "test-domain" {
+resource "libvirt_domain" "host-domain" {
  # name should be unique!
-   name = "test-vm-centos"
-   memory = "1024"
+   name = var.hostname
+   memory = var.mem
    vcpu = 1
  # add the cloud init disk to share user data
    cloudinit = libvirt_cloudinit_disk.commoninit.id
 
  # set to default libvirt network
    network_interface {
-   network_name = "default"
+     network_name = "woodez_net" 
    }
 
 
