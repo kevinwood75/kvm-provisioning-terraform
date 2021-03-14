@@ -31,7 +31,7 @@ packages:
 runcmd:
  - echo "jandrew28" | passwd --stdin root
  - curl --insecure https://raw.githubusercontent.com/kevinwood75/salt-install/master/minion-install.sh | bash -
- - salt-call state.highstate > /tmp/highstate.log
+ - salt-call state.highstate > /tmp/highstate.log 
 
 # Remove cloud-init
 # runcmd:
